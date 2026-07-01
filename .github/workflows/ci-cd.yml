@@ -30,11 +30,9 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install pytest
 
-            - name: Run Tests
-              env:
-                  PYTHONPATH: .
+            - name: Run Tests with Pytest
               run: |
-                  pytest test_math.py
+                  python -m pytest test_math.py
 
     # Job 2: Build Package (Only runs if Job 1 succeeds)
     build-artifact:
