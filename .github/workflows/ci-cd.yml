@@ -1,0 +1,56 @@
+name: Nvidia CI/CD Demo
+
+# 1. Trigger the workflow on push or pull request to the main branch
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    # Job 1: Matrix Testing
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+            # This runs the tests on Python 3.9, 3.10, and 3.11 simultaneously
+            matrix:
+                python-version: ["3.9", "3.10", "3.11"]
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v5
+              with:
+                  python-version: ${{ matrix.python-version }}
+
+            - name: Install Dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install pytest
+
+            - name: Run Tests with Pytest
+              run: |
+                  pytest test_math.py
+
+    # Job 2: Build Package (Only runs if Job 1 succeeds)
+    build-artifact:
+        needs: test
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Simulate Build/Package Step
+              run: |
+                  echo "Packaging application..."
+                  mkdir dist
+                  cp math_utils.py dist/
+
+            - name: Upload Build Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: python-math-package
+                  path: dist/
