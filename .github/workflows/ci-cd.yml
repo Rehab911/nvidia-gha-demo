@@ -1,6 +1,5 @@
 name: Nvidia CI/CD Demo
 
-# 1. Trigger the workflow on push or pull request to the main branch
 on:
     push:
         branches: [main]
@@ -8,11 +7,9 @@ on:
         branches: [main]
 
 jobs:
-    # Job 1: Matrix Testing
     test:
         runs-on: ubuntu-latest
         strategy:
-            # This runs the tests on Python 3.9, 3.10, and 3.11 simultaneously
             matrix:
                 python-version: ["3.9", "3.10", "3.11"]
 
@@ -34,7 +31,6 @@ jobs:
               run: |
                   python -m pytest test_math.py
 
-    # Job 2: Build Package (Only runs if Job 1 succeeds)
     build-artifact:
         needs: test
         runs-on: ubuntu-latest
